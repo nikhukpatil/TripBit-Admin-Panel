@@ -20,6 +20,8 @@ import SignUp from './pages/SignUp';
 import Layout from './pages/Layout';
 import AdminProfile from './pages/AdminProfile';
 import AccountSetting from './pages/AccountSetting';
+import Company from './components/Administration/Company';
+import StaffManagement from './components/Administration/Staff/StaffManagement';
 
 function App() {
   return (
@@ -57,6 +59,10 @@ function App() {
 
         {/* Redirect if any incorrect route */}
         <Route path="*" element={<Navigate to="/dashboard" />} />
+
+        {/* Sub Headings of administration */}
+        <Route path='administration/company' element={<Company/>} />
+        <Route path='administration/staffmanagement' element={<StaffManagement/>}/>
       </Route>
     </Routes>
   );

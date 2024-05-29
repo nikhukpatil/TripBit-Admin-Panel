@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiChevronRight, FiGrid, FiBox, FiUser } from 'react-icons/fi';
-import { FaCodeBranch } from "react-icons/fa";
+import { FaCodeBranch,  FaListUl } from "react-icons/fa";
 import { SiPowervirtualagents } from "react-icons/si";
 import { IoDocumentsOutline } from "react-icons/io5";
 import { GiCommercialAirplane } from "react-icons/gi";
@@ -10,14 +10,17 @@ import { FaHotel, FaClipboardUser,FaUserShield } from "react-icons/fa6";
 import { RiAccountBoxFill, RiCustomerService2Line } from "react-icons/ri";
 import { TbReportSearch, TbUsersGroup } from "react-icons/tb";
 import { MdOutlineContentPasteGo, MdOutlineSecurity } from "react-icons/md";
+import { BsBuildingFill } from "react-icons/bs";
 
 const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
   const [isUtilitiesOpen, setUtilitiesOpen] = useState(false);
   const [isUsersOpen, setUsersOpen] = useState(false);
+  const [isAdministrationOpen, setIsAdministrationOpen] = useState(false);
+  const toggleAdminstrationDropdown = () => setIsAdministrationOpen(!isAdministrationOpen);
 
   const toggleUtilitiesDropdown = () => setUtilitiesOpen(!isUtilitiesOpen);
   const toggleUsersDropdown = () => setUsersOpen(!isUsersOpen);
-
+  const closeAdminstrationDropdown = () => setIsAdministrationOpen(false);
   const closeUtilitiesDropdown = () => setUtilitiesOpen(false);
   const closeUsersDropdown = () => setUsersOpen(false);
 
@@ -70,6 +73,27 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
                 <Link to="/utilities/security" className=" py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeUtilitiesDropdown}> <MdOutlineSecurity />  Security</Link>
                 <Link to="/utilities/group" className=" py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeUtilitiesDropdown}> <TbUsersGroup />Group</Link>
                 <Link to="/utilities/permission" className=" py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeUtilitiesDropdown}> <GrUserAdmin /> Permission</Link>
+              </div>
+            )}
+          </div>
+
+          {/* administration section */}
+
+          <div>
+            <button onClick={toggleAdminstrationDropdown} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+              <div className="flex items-center">
+                <BsBuildingFill className="text-2xl" />
+                <span className={`ml-4 ${!isOpen && 'hidden'}`}>Administration</span>
+              </div>
+              { isOpen && (
+
+                <FiChevronRight className={`transform ${ isAdministrationOpen ? 'rotate-90' : ''}`} />
+              )}
+            </button>
+            { isAdministrationOpen && isOpen && (
+              <div className="ml-4">
+                <Link to = "administration/company" className=" py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3 " onClick={closeAdminstrationDropdown} > <FaListUl/> Company</Link>
+                <Link to = "administration/staffmanagement" className=" py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3 " onClick={closeAdminstrationDropdown} > <FaListUl/> Staff Management</Link>
               </div>
             )}
           </div>

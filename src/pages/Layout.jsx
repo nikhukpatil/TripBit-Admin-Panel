@@ -1,3 +1,5 @@
+// Layout.js
+
 import React, { useState } from "react";
 import { Outlet } from 'react-router-dom';
 import Sidebar from "../components/Layout/Sidebar";
@@ -26,7 +28,7 @@ const Layout = () => {
         handleMouseEnter={handleMouseEnter} 
         handleMouseLeave={handleMouseLeave} 
       />
-      <div className={`flex-grow ${isSidebarOpen ? 'ml-60' : 'ml-20'}`}>
+      <div className={`flex-grow ${isSidebarOpen ? 'ml-60' : 'ml-[59px]'}`} style={{ overflowY: 'auto' }}>
         <TopBar toggleSidebar={toggleSidebar} />
         <main className="p-4">
           <Outlet />

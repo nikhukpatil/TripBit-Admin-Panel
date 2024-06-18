@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiChevronRight, FiGrid, FiBox, FiUser } from 'react-icons/fi';
 import { FaCodeBranch,  FaListUl } from "react-icons/fa";
@@ -9,24 +9,63 @@ import { GrUserAdmin } from "react-icons/gr";
 import { FaHotel, FaClipboardUser,FaUserShield } from "react-icons/fa6";
 import { RiAccountBoxFill, RiCustomerService2Line } from "react-icons/ri";
 import { TbReportSearch, TbUsersGroup } from "react-icons/tb";
-import { MdOutlineContentPasteGo, MdOutlineSecurity } from "react-icons/md";
+import { MdOutlineContentPasteGo, MdOutlineSecurity, MdOutlineSupportAgent  } from "react-icons/md";
 import { BsBuildingFill } from "react-icons/bs";
 
 const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
   const [isUtilitiesOpen, setUtilitiesOpen] = useState(false);
   const [isUsersOpen, setUsersOpen] = useState(false);
+  const [ isAgentsOpen, setIsAgentsOpen] = useState(false);
   const [isAdministrationOpen, setIsAdministrationOpen] = useState(false);
   const toggleAdminstrationDropdown = () => setIsAdministrationOpen(!isAdministrationOpen);
 
   const toggleUtilitiesDropdown = () => setUtilitiesOpen(!isUtilitiesOpen);
   const toggleUsersDropdown = () => setUsersOpen(!isUsersOpen);
-  const closeAdminstrationDropdown = () => setIsAdministrationOpen(false);
+  const toggleAgentsDropdown = () => setIsAgentsOpen(!isAgentsOpen);
+
   const closeUtilitiesDropdown = () => setUtilitiesOpen(false);
   const closeUsersDropdown = () => setUsersOpen(false);
+  const closeAgentsDropdown = () => setIsAgentsOpen(false);
+  const closeAdminstrationDropdown = () => setIsAdministrationOpen(false);
+
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mediaQuery.matches);
+
+    const handleResize = () => {
+      setIsMobile(mediaQuery.matches);
+      if (mediaQuery.matches) {
+        handleMouseLeave();
+      }
+    };
+
+    mediaQuery.addListener(handleResize);
+
+    return () => {
+      mediaQuery.removeListener(handleResize);
+    };
+  }, [handleMouseLeave]);
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      toggleSidebar();
+      closeUtilitiesDropdown();
+      closeUsersDropdown();
+    }
+  };
+  const toggleSidebar = () => {
+    handleMouseEnter();
+    setTimeout(() => {
+      handleMouseLeave();
+    }, 500); // Adjust the delay time as needed
+  };
 
   return (
     <div
-      className={`h-screen bg-gray-600 text-white transition-width duration-300 fixed top-0 left-0 z-10 ${isOpen ? ' w-60' : 'w-20'} overflow-hidden`}
+      className={`h-screen bg-black text-white transition-width duration-300 fixed top-0 left-0 z-10 ${isOpen ? ' w-60' : ' w-14'} overflow-hidden`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -47,7 +86,7 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
         <nav className="flex-grow overflow-y-auto">
 
           <div>
-            <Link to="/dashboard" className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+            <Link to="/dashboard" onClick={handleLinkClick} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
               <div className="flex items-center">
                 <FiGrid className="text-2xl" />
                 <span className={`ml-4 ${!isOpen && 'hidden'}`}>Dashboard</span>
@@ -99,7 +138,7 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
           </div>
 
           <div>
-            <Link to="/flights" className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+            <Link to="/flights" onClick={handleLinkClick} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
               <div className="flex items-center">
                 <GiCommercialAirplane className="text-2xl" />
                 <span className={`ml-4 ${!isOpen && 'hidden'}`}>Flights</span>
@@ -108,7 +147,7 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
           </div>
 
           <div>
-            <Link to="/hotels" className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+            <Link to="/hotels" onClick={handleLinkClick} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
               <div className="flex items-center">
                 <FaHotel className="text-2xl" />
                 <span className={`ml-4 ${!isOpen && 'hidden'}`}>Hotels</span>
@@ -118,6 +157,33 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
 
 
 
+
+          <div>
+            <button onClick={toggleAgentsDropdown} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+              <div className="flex items-center">
+                <MdOutlineSupportAgent className="text-2xl" />
+                <span className={`ml-4 ${!isOpen && 'hidden'}`}>Agents</span>
+              </div>
+              { isOpen && (
+
+              <FiChevronRight className={`transform ${isAgentsOpen ? 'rotate-90' : ''}`} />
+              )}
+            </button>
+            {isAgentsOpen && isOpen && (
+              <div className="ml-4">
+                <Link to="/agents/add-agents" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Add Agents</Link>
+                <Link to="/agents/view-agents" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> View Agents</Link>
+                <Link to="/agents/search-agents" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Search Agents</Link>
+                <Link to="/agents/sales-rule" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Agent Sales Rule</Link>
+                <Link to="/agents/login-history" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Agent Login History</Link>
+                <Link to="/agents/invalid-login-histor" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Agent Invalid Login History</Link>
+                <Link to="/agents/agents-ledger" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Agent Ledger</Link>
+                <Link to="/agents/reward-programme" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Reward Programme</Link>
+                <Link to="/agents/credit-logs" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Credit Logs</Link>
+                <Link to="/agents/credit-request" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeAgentsDropdown}> <SiPowervirtualagents /> Agent Credit Request</Link>
+              </div>
+            )}
+          </div>
 
           <div>
             <button onClick={toggleUsersDropdown} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
@@ -132,7 +198,6 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
             </button>
             {isUsersOpen && isOpen && (
               <div className="ml-4">
-                <Link to="/users/agents" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeUsersDropdown}> <SiPowervirtualagents /> Agents</Link>
                 <Link to="/users/customers" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeUsersDropdown}> <RiCustomerService2Line /> Customers</Link>
                 <Link to="/users/employee" className="py-2.5 px-4 rounded transition hover:bg-gray-700 flex items-center gap-3" onClick={closeUsersDropdown}> <FaClipboardUser />Employee (Staff)</Link>
               </div>
@@ -140,7 +205,7 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
           </div>
 
           <div>
-            <Link to="/accounts" className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+            <Link to="/accounts" onClick={handleLinkClick} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
               <div className="flex items-center">
                 <RiAccountBoxFill className="text-2xl" />
                 <span className={`ml-4 ${!isOpen && 'hidden'}`}>Accounts</span>
@@ -148,7 +213,7 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
             </Link>
           </div>
           <div>
-            <Link to="/hr" className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+            <Link to="/hr" onClick={handleLinkClick} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
               <div className="flex items-center">
                 <FiBox className="text-2xl" />
                 <span className={`ml-4 ${!isOpen && 'hidden'}`}>HR</span>
@@ -156,7 +221,7 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
             </Link>
           </div>
           <div>
-            <Link to="/reports" className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+            <Link to="/reports" onClick={handleLinkClick} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
               <div className="flex items-center">
                 <TbReportSearch className="text-2xl" />
                 <span className={`ml-4 ${!isOpen && 'hidden'}`}>Reports</span>
@@ -164,7 +229,7 @@ const Sidebar = ({ isOpen, handleMouseEnter, handleMouseLeave }) => {
             </Link>
           </div>
           <div>
-            <Link to="/cms" className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
+            <Link to="/cms" onClick={handleLinkClick} className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700 flex items-center justify-between">
               <div className="flex items-center">
                 <MdOutlineContentPasteGo className="text-2xl" />
                 <span className={`ml-4 ${!isOpen && 'hidden'}`}>CMS</span>

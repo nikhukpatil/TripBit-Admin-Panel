@@ -1,106 +1,62 @@
 import React, { useState } from 'react';
-import { FiMenu, FiSearch, FiBell, FiUser } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import { FiMenu } from 'react-icons/fi';
+import { FaMoneyBillAlt, FaTachometerAlt } from 'react-icons/fa';
+import { AiFillCaretDown } from 'react-icons/ai';
 
 const TopBar = ({ toggleSidebar }) => {
-  const [isNotificationsOpen, setNotificationsOpen] = useState(false);
-  const [isProfileOpen, setProfileOpen] = useState(false);
-  const [isSearchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const toggleNotificationsDropdown = () => {
-    setNotificationsOpen(!isNotificationsOpen);
-    setProfileOpen(false);
-    setSearchOpen(false);
-  };
-
-  const toggleProfileDropdown = () => {
-    setProfileOpen(!isProfileOpen);
-    setNotificationsOpen(false);
-    setSearchOpen(false);
-  };
-
-  const toggleSearch = () => {
-    setSearchOpen(!isSearchOpen);
-    setNotificationsOpen(false);
-    setProfileOpen(false);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
-    <div className="bg-white text-black p-4 flex items-center justify-between relative px-10">
-      <div className="flex items-center space-x-4 gap-5">
-        <button onClick={toggleSidebar} className="text-2xl">
+    <div className="flex items-center justify-between sm:px-4 py-4 bg-white shadow">
+      <div className="flex items-center">
+        <button onClick={toggleSidebar} className="text-2xl sm:block hidden">
           <FiMenu />
         </button>
-        <button>Home</button>
-        <button>Contact</button>
       </div>
-      <div className="flex items-center justify-center space-x-4">
-        <div className="relative">
-          {isSearchOpen && (
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="absolute right-0 mt-12 bg-gray-600 text-white rounded shadow-lg z-10 p-2 w-64 transition-all duration-300"
-              placeholder="Search..."
-            />
-          )}
-          <button className="text-3xl mt-2" onClick={toggleSearch}>
-            <FiSearch className=' bg-gray-500 rounded-lg p-1 overflow-hidden text-white' />
-          </button>
+      <div className="flex items-center sm:space-x-4 space-x-2">
+        <div className="flex flex-col items-center ml-4">
+          <FaMoneyBillAlt className="text-lg mr-2" />
+          <span className="text-[7px] sm:text-base ">Credit Balance: 0</span>
         </div>
-       
-        <button className="text-3xl relative " onClick={toggleNotificationsDropdown}>
-          <FiBell className=' bg-gray-500 rounded-lg p-1 overflow-hidden text-white' />
-          {isNotificationsOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-gray-300 text-black text-sm rounded shadow-lg z-10 transition-all duration-300">
-              <div className="p-4 text-left">
-                <h2 className="font-bold mb-2 px-2">Notifications</h2>
-                <ul>
-                  <li className="py-1 px-2 hover:bg-gray-500 rounded">Notification 1</li>
-                  <li className="py-1 px-2 hover:bg-gray-500 rounded">Notification 2</li>
-                  <li className="py-1 px-2 hover:bg-gray-500 rounded">Notification 3</li>
-                </ul>
-              </div>
-            </div>
-          )}
+        <button className="bg-yellow-500 text-white sm:p-2 p-1 rounded-lg hover:bg-yellow-600 sm:text-sm text-[5px]">
+          Account Statements
         </button>
-        <button className="text-3xl relative" onClick={toggleProfileDropdown}>
-          <div className=' flex  gap-3 justify-center items-center'>
-
-          <span className="text-lg">Hello TripBit</span>
-          <FiUser className=' bg-gray-500 rounded-lg p-1 overflow-hidden text-white' />
+        <button className="bg-yellow-500 text-white sm:p-2 p-1 rounded-lg hover:bg-yellow-600 sm:text-sm text-[5px]">
+          B2B Account Statements
+        </button>
+        <Link to="/dashboard">
+          <div className="flex items-center">
+            <FaTachometerAlt className=" mr-2  sm:text-lg text-sm" />
+            <span className=" sm:text-base text-sm ">Dashboard</span>
           </div>
-          {isProfileOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-gray-300 text-black text-sm rounded shadow-lg z-10 transition-all duration-300">
-              <div className="p-4 text-left">
-                <h2 className="font-bold mb-2 px-2">Admin Profile</h2>
-                <ul>
-                  <Link to='/admin-profile'>
-                    <li className="py-1 px-2 hover:bg-gray-500 rounded" >
-                      My Profile
-                    </li>
-                  </Link>
-                  <Link to='account-setting'>
-                    <li className="py-1 px-2 hover:bg-gray-500 rounded" >
-                      Account Settings
-                    </li>
-                  </Link>
-                  <Link to='/'>
-                    <li className="py-1 px-2 hover:bg-gray-500 rounded" >
-                      Log Out
-                    </li>
-                  </Link>
-                </ul>
-              </div>
+        </Link>
+        <div className="relative">
+          <div className="flex items-center cursor-pointer" onClick={toggleDropdown}>
+            <span className="sm:text-lg text-sm sm:mr-2">Admin</span>
+            <AiFillCaretDown />
+          </div>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-4 w-48 bg-gray-300 border border-gray-200 rounded-lg shadow-md z-10">
+              <Link to="/admin-profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-500">
+                Manage Profile
+              </Link>
+              <Link to="/account-setting" className="block px-4 py-2 text-gray-800 hover:bg-gray-500">
+                Account Settings
+              </Link>
+              <Link to="/dashbaord" className="block px-4 py-2 text-gray-800 hover:bg-gray-500">
+                Change Password
+              </Link>
+              <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-500">
+                Log Out
+              </Link>
             </div>
           )}
-        </button>
+        </div>
       </div>
     </div>
   );
